@@ -38,17 +38,19 @@ export async function decrypt(session: string | undefined = "") {
 export async function createSession(
   userId: string,
   userName?: string,
-  subscriptionValidUntil?: number | null
+  nonce?: number
 ) {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const expirationDuration = 7 * 24 * 60 * 60 * 1000; // 7 days
+  const expiresAt = new Date(Date.now() + expirationDuration);
   const session = await encrypt({
     expiresAt,
     userName,
     accountAddress: userId,
-    subscriptionValidUntil,
+    nonce,
   });
   const cookieStore = await cookies();
 
+  // Set the session cookie
   cookieStore.set("session", session, {
     httpOnly: true,
     secure: true,

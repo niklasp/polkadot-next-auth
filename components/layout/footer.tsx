@@ -19,10 +19,10 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-3">
             <Link href="/" className="text-2xl font-bold dark:text-white">
-              Polkadot next.js Starter
+              Polka Auth
             </Link>
             <p className="mt-4 text-sm text-gray-600 dark:text-gray-400 max-w-lg">
-              A starter project for building Polkadot dApps with Next.js.
+              A simple auth example for Polkadot dApps with Next.js.
             </p>
           </div>
           {footerLinks.map((category) => (

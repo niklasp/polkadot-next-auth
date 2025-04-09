@@ -1,4 +1,4 @@
-# Polkadot Next.js Starter
+# Polkadot Auth Example with next.js
 
 This project is a starter template for building frontend applications on the
 Polkadot network using [papi](https://papi.how) for interacting with polkadot

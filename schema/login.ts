@@ -1,10 +1,17 @@
+import { SS58String, getSs58AddressInfo } from "polkadot-api";
 import { z } from "zod";
 
 export const SignupFormSchema = z.object({
   signer: z
     .string()
     .length(48, { message: "Signer must be 48 characters long." })
-    .trim(),
+    .trim()
+    .pipe(
+      z.custom<SS58String>((value) => {
+        const info = getSs58AddressInfo(value);
+        return info.isValid;
+      }, "Invalid SS58 address")
+    ),
   signature: z.string().min(1, { message: "Signature is required" }),
   signedMessage: z.object({
     statement: z.string(),

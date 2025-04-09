@@ -9,6 +9,7 @@ import { FormState } from "@/schema/login";
 import { Loader } from "../ui/loader";
 import { AnimatePresence } from "framer-motion";
 import { ErrorAccountNotConnected } from "@/lib/errors";
+import { getNonce } from "@/actions/auth";
 export function LoginForm() {
   const { activeSigner, selectedAccount } = usePolkadotExtension();
 
@@ -21,13 +22,15 @@ export function LoginForm() {
       };
     }
 
+    const nonce = await getNonce(selectedAccount.address);
+
     try {
       const message = {
         statement:
           "Sign in with polkadot extension to the example tokengated example dApp",
         uri: window.location.origin,
         version: 1,
-        nonce: 1, // TODO
+        nonce,
       };
 
       const signedMessage = JSON.stringify(message);

@@ -6,14 +6,58 @@ import { SignupFormSchema, FormState } from "@/schema/login";
 import { signatureVerify, cryptoWaitReady } from "@polkadot/util-crypto";
 import { redirect } from "next/navigation";
 import { calculateSubscriptionLength } from "@/lib/calculate-subscription-length";
-import { ErrorSubscriptionExpired } from "@/lib/errors";
+import { createClient, SS58String } from "polkadot-api";
+import { getSmProvider } from "polkadot-api/sm-provider";
+import { dot } from "@polkadot-api/descriptors";
+import { chainSpec } from "polkadot-api/chains/polkadot";
+import { startFromWorker } from "polkadot-api/smoldot/from-node-worker";
+import { Worker } from "worker_threads";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import type { Client } from "polkadot-api/smoldot";
+
+// Singleton worker instance
+let worker: Worker | null = null;
+let smoldot: Client | null = null;
+
+// Initialize worker once
+async function initializeWorker() {
+  if (worker && smoldot) return { worker, smoldot };
+
+  const currentFilePath = fileURLToPath(import.meta.url);
+  const currentDir = dirname(currentFilePath);
+  const workerPath = join(
+    currentDir,
+    "..",
+    "node_modules",
+    "polkadot-api",
+    "dist",
+    "reexports",
+    "smoldot_node-worker.js"
+  );
+
+  worker = new Worker(workerPath);
+  smoldot = startFromWorker(worker);
+
+  return { worker, smoldot };
+}
+
+// Cleanup function to be called on server shutdown
+export async function cleanupWorker() {
+  if (smoldot) {
+    await smoldot.terminate();
+    smoldot = null;
+  }
+  if (worker) {
+    worker.terminate();
+    worker = null;
+  }
+}
 
 export async function signIn(
   state: FormState,
   formData: FormData
 ): Promise<FormState> {
-  console.log("received formData", formData);
-
   // 1. Validate form fields
   const validatedFields = SignupFormSchema.safeParse({
     signer: formData.get("signer"),
@@ -57,17 +101,22 @@ export async function signIn(
     };
   }
 
-  // Here you can add your own logic to verify the user,
+  // 3. Here you can add your own logic to verify the user,
   // e.g. check if the user has transferred a certain amount of funds
   // or has a certain role.
+  console.log("getting nonce for", signer);
 
-  const transactions = await getTransactionsFromAddress(signer);
-  console.log("transactions", transactions);
+  // Get the nonce directly in this function
+  const nonce = await getNonce(signer);
+  console.log("nonce", nonce);
 
-  const subscriptionValidUntil = calculateSubscriptionLength(transactions);
+  // const transactions = await getTransactionsFromAddress(signer);
+  // console.log("transactions", transactions);
+  // const subscriptionValidUntil = calculateSubscriptionLength(transactions);
+  // console.log("subscriptionValidUntil", subscriptionValidUntil);
 
   // 4. create user Session (JWT cookie)
-  await createSession(signer, userName, subscriptionValidUntil);
+  await createSession(signer, userName, nonce);
 
   // 5. redirect to some protected page
   redirect("/protected");
@@ -76,4 +125,31 @@ export async function signIn(
 export async function logout() {
   deleteSession();
   redirect("/");
+}
+
+export async function getNonce(signer: SS58String): Promise<number> {
+  try {
+    const { smoldot: smoldotInstance } = await initializeWorker();
+    const chain = await smoldotInstance.addChain({ chainSpec });
+
+    // Get the provider
+    const provider = getSmProvider(chain);
+
+    // Create a client with the provider
+    const client = createClient(provider);
+
+    // Get the TypedApi
+    const dotApi = client.getTypedApi(dot);
+
+    // Get the account info
+    const accountInfo = await dotApi.query.System.Account.getValue(signer);
+
+    // Extract the nonce from the account info
+    const nonce = accountInfo.nonce;
+
+    return nonce;
+  } catch (error) {
+    console.error("Error getting nonce:", error);
+    throw error;
+  }
 }

@@ -10,10 +10,11 @@ import Footer from "@/components/layout/footer";
 import { ChainInfo } from "@/components/chain/chain-info";
 
 import "./globals.css";
+import "@/lib/worker-manager";
 
 export const metadata: Metadata = {
-  title: "Polkadot Next.js Starter",
-  description: "A starter project for building Polkadot dApps with Next.js.",
+  title: "Polka Auth",
+  description: "A simple auth example for Polkadot dApps with Next.js.",
 };
 
 export default function RootLayout({
