@@ -10,7 +10,6 @@ import Footer from "@/components/layout/footer";
 import { ChainInfo } from "@/components/chain/chain-info";
 
 import "./globals.css";
-import "@/lib/worker-manager";
 
 export const metadata: Metadata = {
   title: "Polka Auth",

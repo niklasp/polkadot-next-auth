@@ -35,18 +35,17 @@ export async function decrypt(session: string | undefined = "") {
   }
 }
 
-export async function createSession(
-  userId: string,
-  userName?: string,
-  nonce?: number
-) {
+/**
+ * Create a session for a user. This is only called after the user has passed the checks in
+ * actions/auth.ts signIn
+ */
+export async function createSession(userId: string, userName?: string) {
   const expirationDuration = 7 * 24 * 60 * 60 * 1000; // 7 days
   const expiresAt = new Date(Date.now() + expirationDuration);
   const session = await encrypt({
     expiresAt,
     userName,
     accountAddress: userId,
-    nonce,
   });
   const cookieStore = await cookies();
 

@@ -1,11 +1,9 @@
-import { verifySubscription } from "@/lib/data-access-layer";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/actions/auth";
 import { Identicon } from "@/components/account/identicon";
 import { SubscriptionTimer } from "@/components/auth/subscription-timer";
-import Link from "next/link";
-
+import { verifySubscription } from "@/actions/verify-session";
 export default async function MembersPage() {
   const session = await verifySubscription();
   console.log("session", session);

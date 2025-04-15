@@ -19,7 +19,7 @@ export const SignupFormSchema = z.object({
       message: "URI must start with http or https",
     }),
     version: z.number(),
-    nonce: z.number(),
+    challenge: z.string(),
   }),
   userName: z.string().optional(),
 });

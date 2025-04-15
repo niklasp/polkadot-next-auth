@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "@/actions/auth";
+import { signIn, generateChallenge, logout } from "@/actions/auth";
 import { usePolkadotExtension } from "@/providers/polkadot-extension-provider";
 import { Binary } from "polkadot-api";
 import { useActionState } from "react";
@@ -9,9 +9,11 @@ import { FormState } from "@/schema/login";
 import { Loader } from "../ui/loader";
 import { AnimatePresence } from "framer-motion";
 import { ErrorAccountNotConnected } from "@/lib/errors";
-import { getNonce } from "@/actions/auth";
+import { useSession } from "@/hooks/use-session";
+
 export function LoginForm() {
   const { activeSigner, selectedAccount } = usePolkadotExtension();
+  const { session, isLoading } = useSession();
 
   // We provide a custom form action that will add client side signing to the form
   // and pass the signature along with the signer to the server action
@@ -22,15 +24,16 @@ export function LoginForm() {
       };
     }
 
-    const nonce = await getNonce(selectedAccount.address);
-
     try {
+      // Get a challenge from the server
+      const challenge = await generateChallenge(selectedAccount.address);
+
       const message = {
         statement:
           "Sign in with polkadot extension to the example tokengated example dApp",
         uri: window.location.origin,
         version: 1,
-        nonce,
+        challenge, // Include the challenge in the message
       };
 
       const signedMessage = JSON.stringify(message);
@@ -67,6 +70,21 @@ export function LoginForm() {
   };
 
   const [formState, loginAction, pending] = useActionState(handleLogin, {});
+
+  if (isLoading) {
+    return <Loader size={24} />;
+  }
+
+  if (session?.isAuth) {
+    return (
+      <div className="flex flex-col gap-2 items-center">
+        <p>Welcome {session.userName}</p>
+        <form action={logout}>
+          <Button type="submit">Logout</Button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <form action={loginAction} className="flex flex-col gap-2 items-center">

@@ -1,9 +1,10 @@
-import { verifySession } from "@/lib/data-access-layer";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/actions/auth";
 import { Identicon } from "@/components/account/identicon";
 import Link from "next/link";
+import { verifySession } from "@/actions/verify-session";
+
 export default async function ProtectedPage() {
   const session = await verifySession();
   if (!session) {
