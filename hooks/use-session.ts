@@ -7,14 +7,12 @@ interface Session {
   isAuth: boolean;
   userName?: string;
   accountAddress: string;
-  subscriptionValidUntil: number | null;
 }
 
 const initialSession: Session = {
   isAuth: false,
   userName: undefined,
   accountAddress: "",
-  subscriptionValidUntil: null,
 };
 
 export function useSession() {

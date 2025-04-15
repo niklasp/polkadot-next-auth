@@ -29,8 +29,6 @@ export async function getTransactionsFromAddress(accountAddress: string) {
     }),
   });
 
-  console.log("response", response);
-
   const result = await response.json();
   console.log("result", result?.data?.transfers);
   const filtered = result?.data?.transfers?.filter(

@@ -1,17 +1,17 @@
 "use client";
 
-import { dot, pas } from "@polkadot-api/descriptors";
+import { pas } from "@polkadot-api/descriptors";
 import type { TypedApi } from "polkadot-api";
 
 export interface ChainConfig {
   key: string;
   name: string;
-  descriptors: typeof dot;
+  descriptors: typeof pas;
   endpoints: string[];
   explorerUrl?: string;
 }
 
-export type AvailableApis = TypedApi<typeof dot>;
+export type AvailableApis = TypedApi<typeof pas>;
 
 export const chainConfig: ChainConfig[] = [
   {

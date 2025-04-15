@@ -1,14 +1,25 @@
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/actions/auth";
 import { Identicon } from "@/components/account/identicon";
-import Link from "next/link";
+
 import { verifySession } from "@/actions/verify-session";
+import Link from "next/link";
 
 export default async function ProtectedPage() {
   const session = await verifySession();
-  if (!session) {
-    redirect("/");
+  console.log("session", session);
+  if (!session.isAuth) {
+    return (
+      <main className="flex min-h-screen p-8 pb-20 flex-col gap-[32px] row-start-2 items-center justify-center relative">
+        <h1 className="text-4xl font-bold">🔒 Protected Page</h1>
+        <div className="flex items-center gap-2">
+          <p>Not authenticated</p>
+        </div>
+        <Link href="/">
+          <Button>← Go Back</Button>
+        </Link>
+      </main>
+    );
   }
   return (
     <main className="flex min-h-screen p-8 pb-20 flex-col gap-[32px] row-start-2 items-center justify-center relative">
@@ -23,9 +34,6 @@ export default async function ProtectedPage() {
         browser tab.
       </em>
       <div className="flex flex-col md:flex-row gap-4">
-        <Button asChild variant="outline">
-          <Link href="/members">Go to members page</Link>
-        </Button>
         <Button onClick={logout}>Logout</Button>
       </div>
     </main>

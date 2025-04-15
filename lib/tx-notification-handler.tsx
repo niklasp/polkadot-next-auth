@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { Check, CircleAlert, Loader2, LoaderPinwheel } from "lucide-react";
+import { Check, CircleAlert } from "lucide-react";
 import { InvalidTxError, type TxEvent } from "polkadot-api";
 import { chainConfig } from "@/papi-config";
 import { Loader } from "../components/ui/loader";

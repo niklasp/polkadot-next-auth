@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { Loader } from "lucide-react";
 
@@ -32,7 +33,9 @@ export default function RootLayout({
           <Footer />
           <ChainInfo />
 
-          <Toaster position="bottom-center" icons={{ loading: <Loader /> }} />
+          <Suspense fallback={null}>
+            <Toaster position="bottom-center" icons={{ loading: <Loader /> }} />
+          </Suspense>
         </Providers>
       </body>
     </html>

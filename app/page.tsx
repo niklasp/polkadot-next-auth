@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { LoginForm } from "@/components/auth/login-form";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import SubscriptionForm from "@/components/auth/subscription-form";
+
 export default async function Home() {
   return (
     <main className="flex min-h-screen p-8 pb-20 flex-col gap-[32px] row-start-2 items-center justify-center relative ">
@@ -24,17 +24,8 @@ export default async function Home() {
             ↗ Go to protected page (requires signature)
           </Link>
         </Button>
-        <Button asChild variant="link">
-          <Link href="/members">
-            ↗ Go to members page (requires subscription)
-          </Link>
-        </Button>
       </div>
       <LoginForm />
-
-      <div className="flex flex-col gap-4 min-w-[320px] w-full max-w-[500px] items-center">
-        <SubscriptionForm />
-      </div>
     </main>
   );
 }

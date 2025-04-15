@@ -85,11 +85,6 @@ export async function signIn(
   // polkadot chains or use other apis
   // TODO
 
-  // const transactions = await getTransactionsFromAddress(signer);
-  // console.log("transactions", transactions);
-  // const subscriptionValidUntil = calculateSubscriptionLength(transactions);
-  // console.log("subscriptionValidUntil", subscriptionValidUntil);
-
   // 4. create user Session (JWT cookie)
 
   if (!verifyResult.isValid) {
