@@ -2,6 +2,8 @@ import Link from "next/link";
 import { WalletSelect } from "../account/wallet-select";
 import { ThemeToggle } from "./theme-toggle";
 import { PolkadotLogo } from "../ui/polkadot-logo";
+import { Github } from "lucide-react";
+import { Button } from "../ui/button";
 
 export default function Nav() {
   return (
@@ -12,6 +14,11 @@ export default function Nav() {
       </Link>
 
       <div className="flex items-center gap-2 h-12">
+        <Link href="https://github.com/niklasp/polkadot-next-auth">
+          <Button size="icon" variant="ghost">
+            <Github size={24} />
+          </Button>
+        </Link>
         <ThemeToggle />
         <WalletSelect />
       </div>
