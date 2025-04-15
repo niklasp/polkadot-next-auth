@@ -6,8 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prepare": "pnpm papi"
+    "lint": "next lint"
   },
   "dependencies": {
     "@polkadot-api/descriptors": "file:.papi/descriptors",
